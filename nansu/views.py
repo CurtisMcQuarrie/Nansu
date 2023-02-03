@@ -6,13 +6,13 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QVBoxLayout,
     QLabel,
-    QPushButton, 
+    QPushButton,
     QDialog,
     QMessageBox,
     QWidget,
     QMainWindow,
     QStatusBar,
-    QToolBar, 
+    QToolBar,
 )
 from .dialog import AddTransactionDialog
 from .model import TransactionsModel
@@ -20,10 +20,12 @@ from .model import TransactionsModel
 WINDOW_WIDTH = 650
 WINDOW_HEIGHT = 550
 
+
 class MainWindow(QMainWindow):
     """
     Main Window of application
     """
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Nansu Finance App")
@@ -67,7 +69,6 @@ class MainWindow(QMainWindow):
         """
         dialog = AddTransactionDialog(self)
         if dialog.exec() == QDialog.Accepted:
-
             self.transactions_model.addTransaction(dialog.data)
             self.table.resizeColumnsToContents()
 
@@ -78,7 +79,7 @@ class MainWindow(QMainWindow):
         row = self.table.currentIndex().row()
         if row < 0:
             return
-        
+
         messageBox = QMessageBox.warning(
             self,
             "Warning!",
@@ -109,5 +110,3 @@ class MainWindow(QMainWindow):
         """
         menu = self.menuBar().addMenu("&Menu")
         menu.addAction("&Exit", self.close)
-
-

@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import QApplication
 from .database import createConnection
 from .views import MainWindow
 
+
 def main():
     """
     Nansu main function

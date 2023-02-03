@@ -20,7 +20,6 @@ class AddTransactionDialog(QDialog):
         self.data = None
 
         self.setupUI()
-        
 
     def setupUI(self):
         """
@@ -68,10 +67,8 @@ class AddTransactionDialog(QDialog):
                 return
 
             self.data.append(field.text())
-        
+
         if not self.data:
             return
-        
+
         super().accept()
-
-

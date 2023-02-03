@@ -13,7 +13,6 @@ class TransactionFields(Enum):
 
 
 class TransactionsModel:
-
     def __init__(self):
         self.model = self._createModel()
 
@@ -39,9 +38,15 @@ class TransactionsModel:
         rows = self.model.rowCount()
         self.model.insertRows(rows, 1)
 
-        self.model.setData(self.model.index(rows,TransactionFields.Amount.value), data[0])
-        self.model.setData(self.model.index(rows,TransactionFields.Date.value), data[1])
-        self.model.setData(self.model.index(rows,TransactionFields.Description.value), data[2])
+        self.model.setData(
+            self.model.index(rows, TransactionFields.Amount.value), data[0]
+        )
+        self.model.setData(
+            self.model.index(rows, TransactionFields.Date.value), data[1]
+        )
+        self.model.setData(
+            self.model.index(rows, TransactionFields.Description.value), data[2]
+        )
 
         self.model.submitAll()
         self.model.select()
