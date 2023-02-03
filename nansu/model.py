@@ -25,7 +25,10 @@ class TransactionsModel:
         """
         rows = self.model.rowCount()
         self.model.insertRows(rows, 1)
-        for column, field in enumerate(data):
-            self.model.setData(self.model.index(rows, column + 1), field)
+
+        self.model.setData(self.model.index(rows,1), data[0])  # amount
+        self.model.setData(self.model.index(rows,4), data[1])  # date
+        self.model.setData(self.model.index(rows,5), data[2])  # description
+
         self.model.submitAll()
         self.model.select()

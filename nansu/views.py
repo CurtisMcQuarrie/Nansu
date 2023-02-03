@@ -64,6 +64,7 @@ class MainWindow(QMainWindow):
         """
         dialog = AddTransactionDialog(self)
         if dialog.exec() == QDialog.Accepted:
+            
             self.transactions_model.addTransaction(dialog.data)
             self.table.resizeColumnsToContents()
 

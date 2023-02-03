@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (
     QFormLayout,
     QVBoxLayout,
     QLineEdit,
-    QDateEdit,
+    QDateTimeEdit,
     QMessageBox,
 )
 from PyQt5.QtGui import QIntValidator
@@ -30,7 +30,7 @@ class AddTransactionDialog(QDialog):
         self.amount_field.setValidator(QIntValidator())
         self.amount_field.setObjectName("Amount")
 
-        self.date_field = QDateEdit(calendarPopup=True)
+        self.date_field = QDateTimeEdit(calendarPopup=True)
         self.date_field.setDateTime(QDateTime.currentDateTime())
         self.date_field.setObjectName("Date")
 
