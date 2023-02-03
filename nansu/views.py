@@ -46,7 +46,9 @@ class MainWindow(QMainWindow):
         self.table = QTableView()
         self.table.setModel(self.transactions_model.model)
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        self.table.resizeColumnsToContents()
+        self.table.horizontalHeader().setStretchLastSection(True)
+        self.table.setColumnHidden(0, True)
+        self.table.setColumnHidden(3, True)
         # create buttons
         self.addButton = QPushButton("Add")
         self.addButton.clicked.connect(self.openAddTransactionDialog)

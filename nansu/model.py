@@ -3,7 +3,7 @@ from PyQt5.QtSql import QSqlTableModel
 from enum import Enum
 
 
-class TransactionFields(Enum):
+class TransactionField(Enum):
     Id = 0
     Amount = 1
     Unit = 2
@@ -29,6 +29,7 @@ class TransactionsModel:
         for columnIndex, header in enumerate(headers):
             tableModel.setHeaderData(columnIndex, Qt.Horizontal, header)
         tableModel.setSort(4, Qt.AscendingOrder)
+
         return tableModel
 
     def addTransaction(self, data):
@@ -39,16 +40,26 @@ class TransactionsModel:
         self.model.insertRows(rows, 1)
 
         self.model.setData(
-            self.model.index(rows, TransactionFields.Amount.value), data[0]
+            self.model.index(
+                rows, 
+                TransactionField.Amount.value
+            ), data[0]
         )
         self.model.setData(
-            self.model.index(rows, TransactionFields.Date.value), data[1]
+            self.model.index(
+                rows, 
+                TransactionField.Date.value
+            ), data[1]
         )
         self.model.setData(
-            self.model.index(rows, TransactionFields.Description.value), data[2]
+            self.model.index(
+                rows, 
+                TransactionField.Description.value
+            ), data[2]
         )
 
         self.model.submitAll()
+        self.model.setSort(4, Qt.AscendingOrder)
         self.model.select()
 
     def deleteTransaction(self, row):
@@ -57,6 +68,7 @@ class TransactionsModel:
         """
         self.model.removeRow(row)
         self.model.submitAll()
+        self.model.setSort(4, Qt.AscendingOrder)
         self.model.select()
 
     def clearTransactions(self):
@@ -67,4 +79,5 @@ class TransactionsModel:
         self.model.removeRows(0, self.model.rowCount())
         self.model.submitAll()
         self.model.setEditStrategy(QSqlTableModel.OnFieldChange)
+        self.model.setSort(4, Qt.AscendingOrder)
         self.model.select()
