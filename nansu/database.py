@@ -1,5 +1,5 @@
-from PyQt6.QtWidgets import QMessageBox
-from PyQt6.QtSql import QSqlDatabase, QSqlQuery
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 
 
 def _createTransactionsTable():
@@ -15,7 +15,7 @@ def _createTransactionsTable():
             unit VARCHAR(40) NOT NULL DEFAULT 'CAD$',
             dateCreated DATETIME DEFAULT CURRENT_TIMESTAMP,
             date DATETIME NOT NULL,
-            description VARCHAR(255),
+            description VARCHAR(255)
         )
         """
     )
@@ -31,11 +31,10 @@ def createConnection(databaseName):
     if not connection.open():
         QMessageBox.warning(
             None,
-            "Nansu",
+            "Nansu Transaction",
             f"Database Error: {connection.lastError().text()}",
         )
         return False
 
     _createTransactionsTable()
-    print(connection.tables())
     return True
