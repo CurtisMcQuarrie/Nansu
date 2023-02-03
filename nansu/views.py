@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import (
     QLabel,
     QPushButton, 
     QDialog,
+    QMessageBox,
     QWidget,
     QMainWindow,
     QStatusBar,
@@ -48,7 +49,9 @@ class MainWindow(QMainWindow):
         self.addButton = QPushButton("Add")
         self.addButton.clicked.connect(self.openAddTransactionDialog)
         self.deleteButton = QPushButton("Delete")
+        self.deleteButton.clicked.connect(self.deleteTransaction)
         self.clearAllButton = QPushButton("Clear All")
+        self.clearAllButton.clicked.connect(self.clearTransactions)
         # lay out the GUI
         layout = QVBoxLayout()
         layout.addWidget(self.addButton)
@@ -64,11 +67,46 @@ class MainWindow(QMainWindow):
         """
         dialog = AddTransactionDialog(self)
         if dialog.exec() == QDialog.Accepted:
-            
+
             self.transactions_model.addTransaction(dialog.data)
             self.table.resizeColumnsToContents()
 
+    def deleteTransaction(self):
+        """
+        delete the selected transaction from the database
+        """
+        row = self.table.currentIndex().row()
+        if row < 0:
+            return
+        
+        messageBox = QMessageBox.warning(
+            self,
+            "Warning!",
+            "Do you want to remove the selected transaction?",
+            QMessageBox.Ok | QMessageBox.Cancel,
+        )
+
+        if messageBox == QMessageBox.Ok:
+            self.transactions_model.deleteTransaction(row)
+
+    def clearTransactions(self):
+        """
+        remove all transactions from the database
+        """
+        messageBox = QMessageBox.warning(
+            self,
+            "Warning!",
+            "Do you want to remove all your contacts?",
+            QMessageBox.Ok | QMessageBox.Cancel,
+        )
+
+        if messageBox == QMessageBox.Ok:
+            self.transactions_model.clearTransactions()
+
     def _createMenu(self):
+        """
+        create the menu
+        """
         menu = self.menuBar().addMenu("&Menu")
         menu.addAction("&Exit", self.close)
 
