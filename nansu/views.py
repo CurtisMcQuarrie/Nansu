@@ -14,8 +14,8 @@ from PyQt5.QtWidgets import (
     QStatusBar,
     QToolBar,
 )
-from .dialog import AddTransactionDialog
-from .model import TransactionsModel
+from .dialog import AddAccountDialog
+from .model import AccountsModel, AccountField
 
 WINDOW_WIDTH = 650
 WINDOW_HEIGHT = 550
@@ -35,7 +35,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.centralWidget)
         self.layout = QHBoxLayout()
         self.centralWidget.setLayout(self.layout)
-        self.transactions_model = TransactionsModel()
+        self.accounts_model = AccountsModel()
         self._setupUI()
 
     def _setupUI(self):
@@ -44,18 +44,17 @@ class MainWindow(QMainWindow):
         """
         # create table view widget
         self.table = QTableView()
-        self.table.setModel(self.transactions_model.model)
+        self.table.setModel(self.accounts_model.model)
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.horizontalHeader().setStretchLastSection(True)
-        self.table.setColumnHidden(0, True)
-        self.table.setColumnHidden(3, True)
+        self.table.setColumnHidden(AccountField.Id.value, True)
         # create buttons
         self.addButton = QPushButton("Add")
-        self.addButton.clicked.connect(self.openAddTransactionDialog)
+        self.addButton.clicked.connect(self.openAddAccountDialog)
         self.deleteButton = QPushButton("Delete")
-        self.deleteButton.clicked.connect(self.deleteTransaction)
+        self.deleteButton.clicked.connect(self.deleteAccount)
         self.clearAllButton = QPushButton("Clear All")
-        self.clearAllButton.clicked.connect(self.clearTransactions)
+        self.clearAllButton.clicked.connect(self.clearAccounts)
         # lay out the GUI
         layout = QVBoxLayout()
         layout.addWidget(self.addButton)
@@ -65,18 +64,18 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(self.table)
         self.layout.addLayout(layout)
 
-    def openAddTransactionDialog(self):
+    def openAddAccountDialog(self):
         """
-        open the add transaction dialog
+        open the add account dialog
         """
-        dialog = AddTransactionDialog(self)
+        dialog = AddAccountDialog(self)
         if dialog.exec() == QDialog.Accepted:
-            self.transactions_model.addTransaction(dialog.data)
+            self.accounts_model.addAccount(dialog.data)
             self.table.resizeColumnsToContents()
 
-    def deleteTransaction(self):
+    def deleteAccount(self):
         """
-        delete the selected transaction from the database
+        delete the selected account from the database
         """
         row = self.table.currentIndex().row()
         if row < 0:
@@ -85,26 +84,26 @@ class MainWindow(QMainWindow):
         messageBox = QMessageBox.warning(
             self,
             "Warning!",
-            "Do you want to remove the selected transaction?",
+            "Do you want to remove the selected Account?",
             QMessageBox.Ok | QMessageBox.Cancel,
         )
 
         if messageBox == QMessageBox.Ok:
-            self.transactions_model.deleteTransaction(row)
+            self.accounts_model.deleteAccount(row)
 
-    def clearTransactions(self):
+    def clearAccounts(self):
         """
-        remove all transactions from the database
+        remove all accounts from the database
         """
         messageBox = QMessageBox.warning(
             self,
             "Warning!",
-            "Do you want to remove all your contacts?",
+            "Do you want to remove all your Accounts?",
             QMessageBox.Ok | QMessageBox.Cancel,
         )
 
         if messageBox == QMessageBox.Ok:
-            self.transactions_model.clearTransactions()
+            self.accounts_model.clearAccounts()
 
     def _createMenu(self):
         """

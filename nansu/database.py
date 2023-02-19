@@ -53,7 +53,7 @@ def _createAccountsTable():
         CREATE TABLE IF NOT EXISTS accounts (
             id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL,
             createDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-            name VARCHAR(40) NOT NULL DEFAULT 'Chequing'
+            name VARCHAR(63) NOT NULL DEFAULT 'Chequing'
         )
         """
     )
