@@ -212,10 +212,6 @@ class PaymentsWidget(QWidget):
     def openAddDialog(self):
         """
         open the add payment dialog
-        TODO: create transactions when payments are added
-        TODO: change transactions view to be a tab instead
-        TODO: prevent modifications for specific sensitive columns
-        TODO: add title for each widget.
         """
         dialog = AddPaymentDialog(self.parent().parent().current_account_id, self)
         if dialog.exec() == QDialog.Accepted:
