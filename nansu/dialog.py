@@ -81,17 +81,8 @@ class AddTransactionDialog(QDialog):
         self.amount_field.setValidator(QIntValidator())
         self.amount_field.setObjectName("Amount")
 
-        # self.date_field = QDateTimeEdit(calendarPopup=True)
-        # self.date_field.setDateTime(QDateTime.currentDateTime())
-        # self.date_field.setObjectName("Date")
-
-        # self.description_field = QLineEdit()
-        # self.description_field.setObjectName("Description")
-
         formLayout = QFormLayout()
         formLayout.addRow("Amount:", self.amount_field)
-        # formLayout.addRow("Date:", self.date_field)
-        # formLayout.addRow("Description:", self.description_field)
         self.layout.addLayout(formLayout)
 
         self.buttons_box = QDialogButtonBox(self)

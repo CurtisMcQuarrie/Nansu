@@ -16,7 +16,9 @@ def _createTransactionsTable():
             paidDate DATETIME DEFAULT CURRENT_TIMESTAMP,
             dueDate DATETIME DEFAULT CURRENT_TIMESTAMP,
             paymentID INTEGER NOT NULL,
-            FOREIGN KEY (paymentID) REFERENCES payments (id) ON DELETE CASCADE
+            FOREIGN KEY (paymentID) REFERENCES payments (id) 
+                ON DELETE CASCADE
+                ON UPDATE CASCADE
         )
         """
     )
@@ -37,7 +39,9 @@ def _createPaymentsTable():
             frequency VARCHAR(40) NOT NULL DEFAULT 'Daily',
             description VARCHAR(128),
             accountID INTEGER NOT NULL,
-            FOREIGN KEY (accountID) REFERENCES accounts (id) ON DELETE CASCADE
+            FOREIGN KEY (accountID) REFERENCES accounts (id) 
+                ON DELETE CASCADE
+                ON UPDATE CASCADE
         )
         """
     )

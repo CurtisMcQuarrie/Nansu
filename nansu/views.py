@@ -53,6 +53,8 @@ class MainWindow(QMainWindow):
         self.addButton.clicked.connect(self.openAddAccountDialog)
         self.deleteButton = QPushButton("Delete")
         self.deleteButton.clicked.connect(self.deleteAccount)
+        self.viewButton = QPushButton("View")
+        self.viewButton.clicked.connect(self.viewAccount)
         self.clearAllButton = QPushButton("Clear All")
         self.clearAllButton.clicked.connect(self.clearAccounts)
         # lay out the GUI
@@ -60,6 +62,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.addButton)
         layout.addWidget(self.deleteButton)
         layout.addStretch()
+        layout.addWidget(self.viewButton)
         layout.addWidget(self.clearAllButton)
         self.layout.addWidget(self.table)
         self.layout.addLayout(layout)
@@ -104,6 +107,12 @@ class MainWindow(QMainWindow):
 
         if messageBox == QMessageBox.Ok:
             self.accounts_model.clearAccounts()
+
+    def viewAccount(self):
+        """
+        view the selected account
+        """
+        
 
     def _createMenu(self):
         """
