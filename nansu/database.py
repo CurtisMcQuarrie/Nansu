@@ -13,9 +13,47 @@ def _createTransactionsTable():
             id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL,
             amount INTEGER NOT NULL,
             unit VARCHAR(40) NOT NULL DEFAULT 'CAD$',
-            dateCreated DATETIME DEFAULT CURRENT_TIMESTAMP,
-            date DATETIME NOT NULL,
-            description VARCHAR(255)
+            paidDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+            dueDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+            paymentID INTEGER NOT NULL,
+            FOREIGN KEY (paymentID) REFERENCES payments (id) ON DELETE CASCADE
+        )
+        """
+    )
+
+
+def _createPaymentsTable():
+    """
+    Create the payments table in the database
+    """
+    createTableQuery = QSqlQuery()
+    return createTableQuery.exec(
+        """
+        CREATE TABLE IF NOT EXISTS payments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL,
+            createDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+            startDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+            endDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+            frequency VARCHAR(40) NOT NULL DEFAULT 'Daily',
+            description VARCHAR(128),
+            accountID INTEGER NOT NULL,
+            FOREIGN KEY (accountID) REFERENCES accounts (id) ON DELETE CASCADE
+        )
+        """
+    )
+
+
+def _createAccountsTable():
+    """
+    Create the accounts table in the database
+    """
+    createTableQuery = QSqlQuery()
+    return createTableQuery.exec(
+        """
+        CREATE TABLE IF NOT EXISTS accounts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL,
+            createDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+            name VARCHAR(40) NOT NULL DEFAULT 'Chequing'
         )
         """
     )
@@ -36,5 +74,7 @@ def createConnection(databaseName):
         )
         return False
 
+    _createAccountsTable()
+    _createPaymentsTable()
     _createTransactionsTable()
     return True

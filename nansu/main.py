@@ -18,7 +18,7 @@ def main():
     # create application
     nansu_app = QApplication([])
     # connect to the database
-    if not createConnection("transactions.sqlite"):
+    if not createConnection("nansu.sqlite"):
         sys.exit(1)
     # create main window
     window = MainWindow()

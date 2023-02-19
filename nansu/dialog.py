@@ -29,17 +29,17 @@ class AddTransactionDialog(QDialog):
         self.amount_field.setValidator(QIntValidator())
         self.amount_field.setObjectName("Amount")
 
-        self.date_field = QDateTimeEdit(calendarPopup=True)
-        self.date_field.setDateTime(QDateTime.currentDateTime())
-        self.date_field.setObjectName("Date")
+        # self.date_field = QDateTimeEdit(calendarPopup=True)
+        # self.date_field.setDateTime(QDateTime.currentDateTime())
+        # self.date_field.setObjectName("Date")
 
-        self.description_field = QLineEdit()
-        self.description_field.setObjectName("Description")
+        # self.description_field = QLineEdit()
+        # self.description_field.setObjectName("Description")
 
         formLayout = QFormLayout()
         formLayout.addRow("Amount:", self.amount_field)
-        formLayout.addRow("Date:", self.date_field)
-        formLayout.addRow("Description:", self.description_field)
+        # formLayout.addRow("Date:", self.date_field)
+        # formLayout.addRow("Description:", self.description_field)
         self.layout.addLayout(formLayout)
 
         self.buttons_box = QDialogButtonBox(self)
@@ -56,19 +56,41 @@ class AddTransactionDialog(QDialog):
         accept data provided through dialog
         """
         self.data = []
-        for field in (self.amount_field, self.date_field, self.description_field):
-            if not field.text():
-                QMessageBox.critical(
-                    self,
-                    "Error!",
-                    f"You must provide a transaction's {field.objectName()}",
-                )
-                self.data = None  # reset data
-                return
+        if not self.amount_field.text():
+            QMessageBox.critical(
+                self,
+                "Error!",
+                f"You must provide a transaction's {self.amount_field.objectName()}",
+            )
+            self.data = None  # reset data
+            return
 
-            self.data.append(field.text())
+        self.data.append(self.amount_field.text())
 
         if not self.data:
             return
 
         super().accept()
+
+
+    # def accept(self):
+    #     """
+    #     accept data provided through dialog
+    #     """
+    #     self.data = []
+    #     for field in (self.amount_field, self.date_field, self.description_field):
+    #         if not field.text():
+    #             QMessageBox.critical(
+    #                 self,
+    #                 "Error!",
+    #                 f"You must provide a transaction's {field.objectName()}",
+    #             )
+    #             self.data = None  # reset data
+    #             return
+
+    #         self.data.append(field.text())
+
+    #     if not self.data:
+    #         return
+
+    #     super().accept()
