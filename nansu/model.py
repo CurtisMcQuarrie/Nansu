@@ -98,12 +98,12 @@ class CustomModel:
             self.sort_order = temp_sort_order
             self.model.setSort(self.field_names.index(self.sort_field), self.sort_order)
 
-    def setRelation(field, relation_table, relation_field, displayed_relation_field):
+    def setRelation(self, field, relation_table, relation_field, displayed_relation_field):
         """
         add a foreign key relation to the model
         """
         if (
-            self.table_type == TableType.Relational.value and
+            self.table_type == TableType.Relational and
             field in self.field_names and 
             relation_field in relation_table.field_names and 
             displayed_relation_field in relation_table.field_names
@@ -112,3 +112,12 @@ class CustomModel:
                 self.field_names.index(field),
                 QSqlRelation(relation_table.table_name, relation_field, displayed_relation_field)
             )
+        else:
+            print("SQL relation attempt failed")
+
+    def setFilter(self, field, value):
+        """
+        add a filter to the model
+        """
+        self.model.setFilter(f"{field}={value}")
+        self.model.select()
