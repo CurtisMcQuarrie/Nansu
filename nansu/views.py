@@ -13,9 +13,10 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QStatusBar,
     QToolBar,
+    QStackedWidget,
 )
 from .dialog import AddAccountDialog
-from .model import AccountsModel, AccountField
+from .model import AccountsModel, AccountField, TableType, CustomModel  #, PaymentsModel, PaymentField
 
 WINDOW_WIDTH = 650
 WINDOW_HEIGHT = 550
@@ -29,18 +30,39 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Nansu Finance App")
-        self._createMenu()
         self.resize(WINDOW_WIDTH, WINDOW_HEIGHT)
-        self.centralWidget = QWidget()
-        self.setCentralWidget(self.centralWidget)
-        self.layout = QHBoxLayout()
-        self.centralWidget.setLayout(self.layout)
-        self.accounts_model = AccountsModel()
+        # initialize subwidgets
+        self.accounts_widget = AccountsWidget(parent=self)
+        self.central_widget = QStackedWidget()
+        self.central_widget.addWidget(self.accounts_widget)
+        self.setCentralWidget(self.central_widget)
+
+    def _createMenu(self):
+        """
+        create the menu
+        """
+        menu = self.menuBar().addMenu("&Menu")
+        menu.addAction("&Exit", self.close)
+
+
+class AccountsWidget(QWidget):
+    """
+    View for manipulating accounts
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self.accounts_model = CustomModel("accounts", ["ID", "CreateDate", "Name"], TableType.NonRelational)
+        self.outer_layout = QHBoxLayout()
+        # self.model = AccountsModel()
+        self.inner_layout = QVBoxLayout()
         self._setupUI()
+        self.setLayout(self.outer_layout)
+        
 
     def _setupUI(self):
         """
-        setup the main window's GUI
+        setup accounts view gui
         """
         # create table view widget
         self.table = QTableView()
@@ -59,13 +81,13 @@ class MainWindow(QMainWindow):
         self.clearAllButton.clicked.connect(self.clearAccounts)
         # lay out the GUI
         layout = QVBoxLayout()
-        layout.addWidget(self.addButton)
-        layout.addWidget(self.deleteButton)
-        layout.addStretch()
-        layout.addWidget(self.viewButton)
-        layout.addWidget(self.clearAllButton)
-        self.layout.addWidget(self.table)
-        self.layout.addLayout(layout)
+        self.inner_layout.addWidget(self.addButton)
+        self.inner_layout.addWidget(self.deleteButton)
+        self.inner_layout.addStretch()
+        self.inner_layout.addWidget(self.viewButton)
+        self.inner_layout.addWidget(self.clearAllButton)
+        self.outer_layout.addWidget(self.table)
+        self.outer_layout.addLayout(self.inner_layout)
 
     def openAddAccountDialog(self):
         """
@@ -73,7 +95,7 @@ class MainWindow(QMainWindow):
         """
         dialog = AddAccountDialog(self)
         if dialog.exec() == QDialog.Accepted:
-            self.accounts_model.addAccount(dialog.data)
+            self.accounts_model.add(dialog.data)
             self.table.resizeColumnsToContents()
 
     def deleteAccount(self):
@@ -92,7 +114,7 @@ class MainWindow(QMainWindow):
         )
 
         if messageBox == QMessageBox.Ok:
-            self.accounts_model.deleteAccount(row)
+            self.accounts_model.delete(row)
 
     def clearAccounts(self):
         """
@@ -106,17 +128,11 @@ class MainWindow(QMainWindow):
         )
 
         if messageBox == QMessageBox.Ok:
-            self.accounts_model.clearAccounts()
+            self.accounts_model.clear()
 
+    
     def viewAccount(self):
         """
         view the selected account
         """
-        
-
-    def _createMenu(self):
-        """
-        create the menu
-        """
-        menu = self.menuBar().addMenu("&Menu")
-        menu.addAction("&Exit", self.close)
+        pass

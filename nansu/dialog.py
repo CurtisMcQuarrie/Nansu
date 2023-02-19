@@ -45,7 +45,7 @@ class AddAccountDialog(QDialog):
         """
         accept data provided through dialog
         """
-        self.data = []
+        self.data = {}
         if not self.name_field.text():
             QMessageBox.critical(
                 self,
@@ -55,7 +55,7 @@ class AddAccountDialog(QDialog):
             self.data = None  # reset data
             return
 
-        self.data.append(self.name_field.text())
+        self.data["Name"] = self.name_field.text()
 
         if not self.data:
             return
