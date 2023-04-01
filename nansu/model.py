@@ -8,6 +8,16 @@ class TableType(Enum):
     Relational = 1
 
 
+class PaymentFrequency(Enum):
+    Daily = "Daily"
+    Weekly = "Weekly"
+    BiWeekly = "Bi-Weekly"
+    Monthly = "Monthly"
+    BiMonthly = "Bi-Monthly"
+    Annually = "Annually"
+    SemiAnnually = "Semi-Annually"
+
+
 class CustomModel:
     def __init__(self, table_name: str, field_names: list(), table_type: TableType):
         self.table_name = table_name
@@ -121,3 +131,9 @@ class CustomModel:
         """
         self.model.setFilter(f"{field}={value}")
         self.model.select()
+
+
+class CustomTransactionModel(CustomModel):
+    
+    def addFromPayment(self, data):
+        print(data)

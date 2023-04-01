@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtCore import QDateTime, Qt
+from .model import PaymentFrequency
 
 
 class AddAccountDialog(QDialog):
@@ -147,13 +148,15 @@ class AddPaymentDialog(QDialog):
         self.form_fields.append(self.end_date_field)
 
         self.frequency_field = QComboBox()
-        self.frequency_field.addItem("Daily")
-        self.frequency_field.addItem("Weekly")
-        self.frequency_field.addItem("Bi-Weekly")
-        self.frequency_field.addItem("Monthly")
-        self.frequency_field.addItem("Bi-Monthly")
-        self.frequency_field.addItem("Annually")
-        self.frequency_field.addItem("Semi-Annually")
+        for freq in PaymentFrequency:
+            self.frequency_field.addItem(freq.value)
+        # self.frequency_field.addItem("Daily")
+        # self.frequency_field.addItem("Weekly")
+        # self.frequency_field.addItem("Bi-Weekly")
+        # self.frequency_field.addItem("Monthly")
+        # self.frequency_field.addItem("Bi-Monthly")
+        # self.frequency_field.addItem("Annually")
+        # self.frequency_field.addItem("Semi-Annually")
         self.frequency_field.setObjectName("Frequency")
         self.form_fields.append(self.frequency_field)
 

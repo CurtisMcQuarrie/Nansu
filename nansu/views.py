@@ -16,7 +16,7 @@ from PyQt5.QtWidgets import (
     QStackedWidget,
 )
 from .dialog import AddAccountDialog, AddPaymentDialog, AddTransactionDialog
-from .model import TableType, CustomModel
+from .model import TableType, CustomModel, CustomTransactionModel
 
 WINDOW_WIDTH = 650
 WINDOW_HEIGHT = 550
@@ -171,6 +171,12 @@ class PaymentsWidget(QWidget):
             TableType.Relational
             )
         self.payments_model.setRelation("Account", self.parent().accounts_widget.accounts_model, "ID", "Name")
+        self.transactions_model = CustomTransactionModel(  # transaction model for adding new transactions based on new payments
+            "transactions", 
+            ["ID", "Amount", "Unit", "PaidDate", "DueDate", "Payment"], 
+            TableType.Relational
+            )
+        self.transactions_model.setRelation("Payment", self.payments_model, "ID", "Description")
         self.outer_layout = QHBoxLayout()
         self.inner_layout = QVBoxLayout()
         self._setupUI()
@@ -216,6 +222,7 @@ class PaymentsWidget(QWidget):
         dialog = AddPaymentDialog(self.parent().parent().current_account_id, self)
         if dialog.exec() == QDialog.Accepted:
             self.payments_model.add(dialog.data)
+            self.transactions_model.addFromPayment(dialog.data)  # add transactions from payment
             self.table.resizeColumnsToContents()
 
     def delete(self):
