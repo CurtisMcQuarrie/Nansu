@@ -150,13 +150,6 @@ class AddPaymentDialog(QDialog):
         self.frequency_field = QComboBox()
         for freq in PaymentFrequency:
             self.frequency_field.addItem(freq.value)
-        # self.frequency_field.addItem("Daily")
-        # self.frequency_field.addItem("Weekly")
-        # self.frequency_field.addItem("Bi-Weekly")
-        # self.frequency_field.addItem("Monthly")
-        # self.frequency_field.addItem("Bi-Monthly")
-        # self.frequency_field.addItem("Annually")
-        # self.frequency_field.addItem("Semi-Annually")
         self.frequency_field.setObjectName("Frequency")
         self.form_fields.append(self.frequency_field)
 

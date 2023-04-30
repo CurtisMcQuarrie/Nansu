@@ -222,7 +222,7 @@ class PaymentsWidget(QWidget):
         dialog = AddPaymentDialog(self.parent().parent().current_account_id, self)
         if dialog.exec() == QDialog.Accepted:
             self.payments_model.add(dialog.data)
-            self.transactions_model.addFromPayment(dialog.data)  # add transactions from payment
+            self.transactions_model.addFromPayment(dialog.data)
             self.table.resizeColumnsToContents()
 
     def delete(self):
@@ -337,6 +337,7 @@ class TransactionsWidget(QWidget):
         """
         dialog = AddPaymentDialog(self.parent().parent().current_payment_id, self)
         if dialog.exec() == QDialog.Accepted:
+            print(dialog.data)
             self.transactions_model.add(dialog.data)
             self.table.resizeColumnsToContents()
 

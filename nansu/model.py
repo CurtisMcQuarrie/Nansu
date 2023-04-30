@@ -1,6 +1,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtSql import QSqlTableModel, QSqlRelationalTableModel, QSqlRelation
 from enum import Enum
+from datetime import timedelta
 
 
 class TableType(Enum):
@@ -136,4 +137,32 @@ class CustomModel:
 class CustomTransactionModel(CustomModel):
     
     def addFromPayment(self, data):
-        print(data)
+        current_date = data.get('StartDate')
+        end_date = data.get('EndDate')
+        frequency = data.get('Frequency')
+        amount = data.get('Amount')
+        transaction_data = {
+            
+        }
+
+        match frequency:
+            case PaymentFrequency.Daily:
+                delta = timedelta(days=1)
+            case PaymentFrequency.Weekly:
+                delta = timedelta(weeks=1)
+            case PaymentFrequency.BiWeekly:
+                delta = timedelta(weeks=2)
+            case PaymentFrequency.Monthly:
+                delta = timedelta(months=1)
+            case PaymentFrequency.BiMonthly:
+                delta = timedelta(months=0.5)
+            case PaymentFrequency.Annually:
+                delta = timedelta(days=365)
+            case PaymentFrequency.SemiAnnually:
+                delta = timedelta(days=365/2)
+            case _:
+                delta = timedelta(days=1)
+
+        while current_date <= end_date:
+            self.add()
+            current_date += delta
