@@ -93,7 +93,6 @@ class AccountsWidget(QWidget):
         self.clearAllButton = QPushButton("Clear All")
         self.clearAllButton.clicked.connect(self.clear)
         # lay out the GUI
-        layout = QVBoxLayout()
         self.inner_layout.addWidget(self.addButton)
         self.inner_layout.addWidget(self.deleteButton)
         self.inner_layout.addStretch()
