@@ -15,6 +15,7 @@ from PyQt5.QtWidgets import (
     QToolBar,
     QStackedWidget,
 )
+from PyQt5 import QtCore
 from .dialog import AddAccountDialog, AddPaymentDialog, AddTransactionDialog
 from .model import TableType, CustomModel, CustomTransactionModel
 
@@ -67,8 +68,9 @@ class AccountsWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.accounts_model = CustomModel("accounts", ["ID", "CreateDate", "Name"], TableType.NonRelational)
-        self.outer_layout = QHBoxLayout()
-        self.inner_layout = QVBoxLayout()
+        self.outer_layout = QVBoxLayout()
+        self.inner_layout = QHBoxLayout()
+        self.btns_layout = QVBoxLayout()
         self._setupUI()
         self.setLayout(self.outer_layout)
         
@@ -82,7 +84,9 @@ class AccountsWidget(QWidget):
         self.table.setModel(self.accounts_model.model)
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.horizontalHeader().setStretchLastSection(True)
-        # self.table.setColumnHidden(0, True)
+        # create the title
+        self.title = QLabel("<h1>Accounts</h1>")
+        self.title.setAlignment(QtCore.Qt.AlignCenter)
         # create buttons
         self.addButton = QPushButton("Add")
         self.addButton.clicked.connect(self.openAddDialog)
@@ -92,15 +96,17 @@ class AccountsWidget(QWidget):
         self.viewButton.clicked.connect(self.view)
         self.clearAllButton = QPushButton("Clear All")
         self.clearAllButton.clicked.connect(self.clear)
-        # lay out the GUI
-        layout = QVBoxLayout()
-        self.inner_layout.addWidget(self.addButton)
-        self.inner_layout.addWidget(self.deleteButton)
-        self.inner_layout.addStretch()
-        self.inner_layout.addWidget(self.viewButton)
-        self.inner_layout.addWidget(self.clearAllButton)
-        self.outer_layout.addWidget(self.table)
+        # lay out the buttons GUI
+        self.btns_layout.addWidget(self.addButton)
+        self.btns_layout.addWidget(self.deleteButton)
+        self.btns_layout.addStretch()
+        self.btns_layout.addWidget(self.viewButton)
+        self.btns_layout.addWidget(self.clearAllButton)
+        # lay out the main GUI
+        self.outer_layout.addWidget(self.title)
         self.outer_layout.addLayout(self.inner_layout)
+        self.inner_layout.addWidget(self.table)
+        self.inner_layout.addLayout(self.btns_layout)
 
     def openAddDialog(self):
         """
@@ -154,7 +160,7 @@ class AccountsWidget(QWidget):
             return
         current_index = self.table.model().index(row, 0)
         self.parent().parent().current_account_id = self.table.model().data(current_index)
-        print(self.parent().parent().current_account_id)
+        # print(self.parent().parent().current_account_id)
         # switch views
         self.parent().parent().switchWidget(self.parent().currentIndex() + 1)
 
@@ -177,15 +183,16 @@ class PaymentsWidget(QWidget):
             TableType.Relational
             )
         self.transactions_model.setRelation("Payment", self.payments_model, "ID", "Description")
-        self.outer_layout = QHBoxLayout()
-        self.inner_layout = QVBoxLayout()
+        self.outer_layout = QVBoxLayout()
+        self.inner_layout = QHBoxLayout()
+        self.btns_layout = QVBoxLayout()
         self._setupUI()
         self.setLayout(self.outer_layout)
         
 
     def _setupUI(self):
         """
-        setup accounts view gui
+        setup payments view gui
         """
         # create table view widget
         self.table = QTableView()
@@ -193,6 +200,9 @@ class PaymentsWidget(QWidget):
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.setColumnHidden(0, True)
+        # create the title
+        self.title = QLabel("<h1>Payments</h1>")
+        self.title.setAlignment(QtCore.Qt.AlignCenter)
         # create buttons
         self.addButton = QPushButton("Add")
         self.addButton.clicked.connect(self.openAddDialog)
@@ -204,16 +214,18 @@ class PaymentsWidget(QWidget):
         self.viewButton.clicked.connect(self.view)
         self.clearAllButton = QPushButton("Clear All")
         self.clearAllButton.clicked.connect(self.clear)
-        # lay out the GUI
-        layout = QVBoxLayout()
-        self.inner_layout.addWidget(self.addButton)
-        self.inner_layout.addWidget(self.deleteButton)
-        self.inner_layout.addStretch()
-        self.inner_layout.addWidget(self.viewButton)
-        self.inner_layout.addWidget(self.backButton)
-        self.inner_layout.addWidget(self.clearAllButton)
-        self.outer_layout.addWidget(self.table)
+        # lay out the buttons GUI
+        self.btns_layout.addWidget(self.addButton)
+        self.btns_layout.addWidget(self.deleteButton)
+        self.btns_layout.addStretch()
+        self.btns_layout.addWidget(self.viewButton)
+        self.btns_layout.addWidget(self.backButton)
+        self.btns_layout.addWidget(self.clearAllButton)
+        # lay out the main GUI
+        self.outer_layout.addWidget(self.title)
         self.outer_layout.addLayout(self.inner_layout)
+        self.inner_layout.addWidget(self.table)
+        self.inner_layout.addLayout(self.btns_layout)
 
     def openAddDialog(self):
         """
@@ -268,7 +280,7 @@ class PaymentsWidget(QWidget):
             return
         current_index = self.table.model().index(row, 0)
         self.parent().parent().current_payment_id = self.table.model().data(current_index)
-        print(self.parent().parent().current_payment_id)
+        # print(self.parent().parent().current_payment_id)
         # switch views
         self.parent().parent().switchWidget(self.parent().currentIndex() + 1)
 
@@ -293,15 +305,16 @@ class TransactionsWidget(QWidget):
             TableType.Relational
             )
         self.transactions_model.setRelation("Payment", self.parent().payments_widget.payments_model, "ID", "Description")
-        self.outer_layout = QHBoxLayout()
-        self.inner_layout = QVBoxLayout()
+        self.outer_layout = QVBoxLayout()
+        self.inner_layout = QHBoxLayout()
+        self.btns_layout = QVBoxLayout()
         self._setupUI()
         self.setLayout(self.outer_layout)
         
 
     def _setupUI(self):
         """
-        setup accounts view gui
+        setup payments view gui
         """
         # create table view widget
         self.table = QTableView()
@@ -309,6 +322,9 @@ class TransactionsWidget(QWidget):
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.setColumnHidden(0, True)
+        # create the title
+        self.title = QLabel("<h1>Transactions</h1>")
+        self.title.setAlignment(QtCore.Qt.AlignCenter)
         # create buttons
         self.addButton = QPushButton("Add")
         self.addButton.clicked.connect(self.openAddDialog)
@@ -320,16 +336,19 @@ class TransactionsWidget(QWidget):
         self.viewButton.clicked.connect(self.view)
         self.clearAllButton = QPushButton("Clear All")
         self.clearAllButton.clicked.connect(self.clear)
-        # lay out the GUI
+        # lay out the buttons GUI
         layout = QVBoxLayout()
-        self.inner_layout.addWidget(self.addButton)
-        self.inner_layout.addWidget(self.deleteButton)
-        self.inner_layout.addStretch()
-        self.inner_layout.addWidget(self.viewButton)
-        self.inner_layout.addWidget(self.backButton)
-        self.inner_layout.addWidget(self.clearAllButton)
-        self.outer_layout.addWidget(self.table)
+        self.btns_layout.addWidget(self.addButton)
+        self.btns_layout.addWidget(self.deleteButton)
+        self.btns_layout.addStretch()
+        self.btns_layout.addWidget(self.viewButton)
+        self.btns_layout.addWidget(self.backButton)
+        self.btns_layout.addWidget(self.clearAllButton)
+        # lay out the main GUI
+        self.outer_layout.addWidget(self.title)
         self.outer_layout.addLayout(self.inner_layout)
+        self.inner_layout.addWidget(self.table)
+        self.inner_layout.addLayout(self.btns_layout)
 
     def openAddDialog(self):
         """
@@ -393,5 +412,5 @@ class TransactionsWidget(QWidget):
         go back to previous index
         """
         self.parent().parent().current_payment_id = -1
-        print(self.parent().parent().current_payment_id)
+        # print(self.parent().parent().current_payment_id)
         self.parent().parent().switchWidget(self.parent().currentIndex() - 1)
