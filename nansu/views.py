@@ -160,7 +160,7 @@ class AccountsWidget(QWidget):
             return
         current_index = self.table.model().index(row, 0)
         self.parent().parent().current_account_id = self.table.model().data(current_index)
-        print(self.parent().parent().current_account_id)
+        # print(self.parent().parent().current_account_id)
         # switch views
         self.parent().parent().switchWidget(self.parent().currentIndex() + 1)
 
@@ -280,7 +280,7 @@ class PaymentsWidget(QWidget):
             return
         current_index = self.table.model().index(row, 0)
         self.parent().parent().current_payment_id = self.table.model().data(current_index)
-        print(self.parent().parent().current_payment_id)
+        # print(self.parent().parent().current_payment_id)
         # switch views
         self.parent().parent().switchWidget(self.parent().currentIndex() + 1)
 
@@ -323,7 +323,7 @@ class TransactionsWidget(QWidget):
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.setColumnHidden(0, True)
         # create the title
-        self.title = QLabel("<h1>Payments</h1>")
+        self.title = QLabel("<h1>Transactions</h1>")
         self.title.setAlignment(QtCore.Qt.AlignCenter)
         # create buttons
         self.addButton = QPushButton("Add")
@@ -412,5 +412,5 @@ class TransactionsWidget(QWidget):
         go back to previous index
         """
         self.parent().parent().current_payment_id = -1
-        print(self.parent().parent().current_payment_id)
+        # print(self.parent().parent().current_payment_id)
         self.parent().parent().switchWidget(self.parent().currentIndex() - 1)
