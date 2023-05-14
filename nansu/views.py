@@ -227,6 +227,7 @@ class PaymentsWidget(QWidget):
         self.btns_layout.addWidget(self.deleteButton)
         self.btns_layout.addStretch()
         self.btns_layout.addWidget(self.viewButton)
+        self.viewButton.setEnabled(False)
         self.btns_layout.addWidget(self.backButton)
         self.btns_layout.addWidget(self.clearAllButton)
         # lay out the main GUI
