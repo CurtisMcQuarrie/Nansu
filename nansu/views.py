@@ -56,7 +56,7 @@ class MainWindow(QMainWindow):
             query_str = f"SELECT name FROM accounts WHERE id={self.current_account_id}"
             row_data = self.payments_widget.payments_model.getRowData(query_str)
             if len(row_data) > 0:
-                self.payments_widget.setTitle(f"\"{row_data[0]}\"")
+                self.payments_widget.setTitle(f"{row_data[0]}")
             else:
                 self.payments_widget.setTitle("")
             self.payments_widget.payments_model.setFilter("accountID", self.current_account_id)
@@ -209,7 +209,7 @@ class PaymentsWidget(QWidget):
         self.table.setColumnHidden(0, True)
         self.table.setColumnHidden(6, True)
         # create the title
-        self.title = QLabel("<h1> Payments</h1>")
+        self.title = QLabel("<h1>Payments</h1>")
         self.title.setAlignment(QtCore.Qt.AlignCenter)
         # create buttons
         self.addButton = QPushButton("Add")
@@ -297,20 +297,23 @@ class PaymentsWidget(QWidget):
         go back to previous index
         """
         self.parent().parent().current_account_id = -1
-        print(self.parent().parent().current_account_id)
+        # print(self.parent().parent().current_account_id)
         self.parent().parent().switchWidget(self.parent().currentIndex() - 1)
 
     def setTitle(self, title, max_length=16):
         """
-        sets the title of the view and formats it in a way that's reasonable
+        set and format the title of the view
         """
         if len(title) > max_length:
             self.title.setToolTip(title)
-            title = title[:max_length-4] + "...\""
+            title = title[:max_length-3] + "..."
+            self.title.setText(f"<h1>\"{title}\" Payments</h>")
+        elif len(title) == 0:
+            self.title.setToolTip(None)
+            self.title.setText(f"<h1>Payments</h>")
         else:
             self.title.setToolTip(None)
-        self.title.setText(f"<h1>{title} Payments</h>")
-
+            self.title.setText(f"<h1>\"{title}\" Payments</h>")
 
 
 class TransactionsWidget(QWidget):
@@ -376,7 +379,6 @@ class TransactionsWidget(QWidget):
         """
         dialog = AddPaymentDialog(self.parent().parent().current_payment_id, self)
         if dialog.exec() == QDialog.Accepted:
-            print(dialog.data)
             self.transactions_model.add(dialog.data)
             self.table.resizeColumnsToContents()
 
@@ -423,7 +425,7 @@ class TransactionsWidget(QWidget):
             return
         current_index = self.table.model().index(row, 0)
         self.parent().parent().current_payment_id = self.table.model().data(current_index)
-        print(self.parent().parent().current_payment_id)
+        # print(self.parent().parent().current_payment_id)
         # switch views
         self.parent().switchWidget(self.parent().currentIndex() + 1)
 
