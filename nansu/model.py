@@ -1,5 +1,10 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtSql import QSqlTableModel, QSqlRelationalTableModel, QSqlRelation
+from PyQt5.QtSql import (
+    QSqlTableModel, 
+    QSqlRelationalTableModel,
+    QSqlRelation,
+    QSqlQuery,
+)
 from enum import Enum
 from datetime import timedelta
 
@@ -132,6 +137,20 @@ class CustomModel:
         """
         self.model.setFilter(f"{field}={value}")
         self.model.select()
+
+    def getRowData(self, query_str):
+        """
+        execute the provided query string to retrieve data for a single row
+        """
+        query = QSqlQuery()
+        query.exec(query_str)
+        query_data = []
+        if query.first():
+            index = 0
+            while query.value(index):
+                query_data.append(query.value(index))
+                index += 1
+        return query_data
 
 
 class CustomTransactionModel(CustomModel):
