@@ -1,10 +1,10 @@
 # Nansu Dev Journal
 
 ## 05.13.23
-[] Payments Update
-    [] Remove the Accounts column
-    [] Add the account name to the title
-    [] Disable the `view` button (temporarily)
+[x] Payments Update
+    [x] Remove the Accounts column
+    [x] Add the account name to the title
+    [x] Disable the `view` button (temporarily)
 [] Transactions Update
     [] Add a way to view the transactions without the `view` button
         - Maybe try out the tabs idea
