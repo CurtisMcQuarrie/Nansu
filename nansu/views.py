@@ -53,6 +53,12 @@ class MainWindow(QMainWindow):
 
     def switchWidget(self, index):
         if index == 1:  # go to payments
+            query_str = f"SELECT name FROM accounts WHERE id={self.current_account_id}"
+            row_data = self.payments_widget.payments_model.getRowData(query_str)
+            if len(row_data) > 0:
+                self.payments_widget.setTitle(f"\"{row_data[0]}\"")
+            else:
+                self.payments_widget.setTitle("")
             self.payments_widget.payments_model.setFilter("accountID", self.current_account_id)
         elif index == 2:  # go to transactions
             self.transactions_widget.transactions_model.setFilter("paymentID", self.current_payment_id)
@@ -87,6 +93,7 @@ class AccountsWidget(QWidget):
         # create the title
         self.title = QLabel("<h1>Accounts</h1>")
         self.title.setAlignment(QtCore.Qt.AlignCenter)
+        self.title.setWordWrap(True)
         # create buttons
         self.addButton = QPushButton("Add")
         self.addButton.clicked.connect(self.openAddDialog)
@@ -167,7 +174,7 @@ class AccountsWidget(QWidget):
 
 class PaymentsWidget(QWidget):
     """
-    View for manipulating accounts
+    View for manipulating payments
     """
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -200,8 +207,9 @@ class PaymentsWidget(QWidget):
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.setColumnHidden(0, True)
+        self.table.setColumnHidden(6, True)
         # create the title
-        self.title = QLabel("<h1>Payments</h1>")
+        self.title = QLabel("<h1> Payments</h1>")
         self.title.setAlignment(QtCore.Qt.AlignCenter)
         # create buttons
         self.addButton = QPushButton("Add")
@@ -292,10 +300,22 @@ class PaymentsWidget(QWidget):
         print(self.parent().parent().current_account_id)
         self.parent().parent().switchWidget(self.parent().currentIndex() - 1)
 
+    def setTitle(self, title, max_length=16):
+        """
+        sets the title of the view and formats it in a way that's reasonable
+        """
+        if len(title) > max_length:
+            self.title.setToolTip(title)
+            title = title[:max_length-4] + "...\""
+        else:
+            self.title.setToolTip(None)
+        self.title.setText(f"<h1>{title} Payments</h>")
+
+
 
 class TransactionsWidget(QWidget):
     """
-    View for manipulating accounts
+    View for manipulating transactions
     """
     def __init__(self, parent=None):
         super().__init__(parent=parent)
