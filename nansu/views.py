@@ -220,6 +220,7 @@ class PaymentsWidget(QWidget):
         self.backButton.clicked.connect(self.back)
         self.viewButton = QPushButton("View")
         self.viewButton.clicked.connect(self.view)
+        self.viewButton.setEnabled(False)
         self.clearAllButton = QPushButton("Clear All")
         self.clearAllButton.clicked.connect(self.clear)
         # lay out the buttons GUI
