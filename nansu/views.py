@@ -32,7 +32,6 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.current_account_id = -1
-        # self.current_payment_id = -1
         self.setWindowTitle("Nansu Finance App")
         self.resize(WINDOW_WIDTH, WINDOW_HEIGHT)
         # initialize subwidgets
@@ -185,7 +184,8 @@ class PaymentsWidget(QWidget):
     """
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.tabs_widget = self.parent()  # parent is referenced here because it is override when added to tabs
+        # parent is referenced here because it is overriden when added to the tabs widget
+        self.tabs_widget = self.parent()
         self.central_widget = self.parent().parent()
         self.main_window = self.central_widget.parent()
         self.payments_model = CustomModel(
@@ -201,7 +201,7 @@ class PaymentsWidget(QWidget):
 
     def _setupRelations(self):
         self.payments_model.setRelation("Account", self.main_window.accounts_widget.accounts_model, "ID", "Name")
-        self.transactions_model = self.parent().transactions_tab.transactions_model        
+        self.transactions_model = self.tabs_widget.transactions_tab.transactions_model        
         
     def _setupUI(self):
         """
@@ -333,6 +333,8 @@ class TransactionsWidget(QWidget):
     """
     def __init__(self, parent=None):
         super().__init__(parent=parent)
+        # parent is referenced here because it is overriden when added to the tabs widget
+        self.tabs_widget = self.parent()
         self.central_widget = self.parent().parent()
         self.main_window = self.central_widget.parent()
         self.transactions_model = CustomModel(
@@ -348,7 +350,7 @@ class TransactionsWidget(QWidget):
         self.setLayout(self.outer_layout)
         
     def _setupRelations(self):
-        self.transactions_model.setRelation("Payment", self.parent().payments_tab.payments_model, "ID", "Description")
+        self.transactions_model.setRelation("Payment", self.tabs_widget.payments_tab.payments_model, "ID", "Description")
         self.transactions_model.setRelation("Account", self.main_window.accounts_widget.accounts_model, "ID", "Name")
 
     def _setupUI(self):
@@ -450,7 +452,6 @@ class TransactionsWidget(QWidget):
         """
         go back to previous index
         """
-        # self.main_window.current_payment_id = -1
         self.main_window.switchWidget(self.central_widget.currentIndex() - 1)
 
     def setTitle(self, title, max_length=16):
