@@ -16,7 +16,11 @@ def _createTransactionsTable():
             paidDate DATETIME DEFAULT CURRENT_TIMESTAMP,
             dueDate DATETIME DEFAULT CURRENT_TIMESTAMP,
             paymentID INTEGER NOT NULL,
+            accountID INTEGER NOT NULL,
             FOREIGN KEY (paymentID) REFERENCES payments (id) 
+                ON DELETE CASCADE
+                ON UPDATE CASCADE
+            FOREIGN KEY (accountID) REFERENCES accounts (id) 
                 ON DELETE CASCADE
                 ON UPDATE CASCADE
         )
