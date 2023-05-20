@@ -54,11 +54,13 @@ class MainWindow(QMainWindow):
     def switchWidget(self, index):
         if index == 1:  # go to payments
             query_str = f"SELECT name FROM accounts WHERE id={self.current_account_id}"
-            row_data = self.tabs_widget.payments_tab.payments_model.getRowData(query_str)
+            row_data = self.accounts_widget.accounts_model.getRowData(query_str)
             if len(row_data) > 0:
                 self.tabs_widget.payments_tab.setTitle(f"{row_data[0]}")
+                self.tabs_widget.transactions_tab.setTitle(f"{row_data[0]}")
             else:
                 self.tabs_widget.payments_tab.setTitle("")
+                self.tabs_widget.transactions_tab.setTitle("")
             self.tabs_widget.payments_tab.payments_model.setFilter("accountID", self.current_account_id)
             self.tabs_widget.transactions_tab.transactions_model.setFilter("accountID", self.current_account_id)
 
@@ -435,6 +437,21 @@ class TransactionsWidget(QWidget):
         """
         self.main_window.current_payment_id = -1
         self.main_window.switchWidget(self.central_widget.currentIndex() - 1)
+
+    def setTitle(self, title, max_length=16):
+        """
+        set and format the title of the view
+        """
+        if len(title) > max_length:
+            self.title.setToolTip(title)
+            title = title[:max_length-3] + "..."
+            self.title.setText(f"<h1>\"{title}\" Transactions</h>")
+        elif len(title) == 0:
+            self.title.setToolTip(None)
+            self.title.setText(f"<h1>Transactions</h>")
+        else:
+            self.title.setToolTip(None)
+            self.title.setText(f"<h1>\"{title}\" Transactions</h>")
 
 
 class TabsWidget(QWidget):
