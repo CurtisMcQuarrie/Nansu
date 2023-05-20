@@ -6,7 +6,7 @@
     [x] Add the account name to the title
     [x] Disable the `view` button (temporarily)
 [] Transactions Update
-    [] Add a way to view the transactions without the `view` button
+    [x] Add a way to view the transactions without the `view` button
         - Maybe try out the tabs idea
     [] `view` button will instead filter the transactions related to the payment
 [] Payments-Transactions Connection

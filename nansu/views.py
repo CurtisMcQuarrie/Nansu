@@ -183,21 +183,16 @@ class PaymentsWidget(QWidget):
             "payments", 
             ["ID", "CreateDate", "StartDate", "EndDate", "Frequency", "Description", "Account"], 
             TableType.Relational
-            )
-        self.payments_model.setRelation("Account", self.main_window.accounts_widget.accounts_model, "ID", "Name")
-        self.transactions_model = CustomTransactionModel(  # transaction model for adding new transactions based on new payments
-            "transactions", 
-            ["ID", "Amount", "Unit", "PaidDate", "DueDate", "Payment", "Account"], 
-            TableType.Relational
-            )
-        self.transactions_model.setRelation("Payment", self.payments_model, "ID", "Description")
-        self.transactions_model.setRelation("Account", self.main_window.accounts_widget.accounts_model, "ID", "Name")
+        )
         self.outer_layout = QVBoxLayout()
         self.inner_layout = QHBoxLayout()
         self.btns_layout = QVBoxLayout()
         self._setupUI()
         self.setLayout(self.outer_layout)
-        
+
+    def _setupRelations(self):
+        self.payments_model.setRelation("Account", self.main_window.accounts_widget.accounts_model, "ID", "Name")
+        self.transactions_model = self.parent().transactions_tab.transactions_model        
 
     def _setupUI(self):
         """
@@ -330,14 +325,16 @@ class TransactionsWidget(QWidget):
             ["ID", "Amount", "Unit", "PaidDate", "DueDate", "Payment", "Account"], 
             TableType.Relational
             )
-        self.transactions_model.setRelation("Payment", self.parent().payments_tab.payments_model, "ID", "Description")
-        self.transactions_model.setRelation("Account", self.main_window.accounts_widget.accounts_model, "ID", "Name")
+    
         self.outer_layout = QVBoxLayout()
         self.inner_layout = QHBoxLayout()
         self.btns_layout = QVBoxLayout()
         self._setupUI()
         self.setLayout(self.outer_layout)
         
+    def _setupRelations(self):
+        self.transactions_model.setRelation("Payment", self.parent().payments_tab.payments_model, "ID", "Description")
+        self.transactions_model.setRelation("Account", self.main_window.accounts_widget.accounts_model, "ID", "Name")
 
     def _setupUI(self):
         """
@@ -446,15 +443,15 @@ class TabsWidget(QWidget):
         self.main_window = self.parent().parent()
         self.layout = QVBoxLayout()
         self.tabs = QTabWidget()
+        # create tabs
         self.payments_tab = PaymentsWidget(parent=self)
         self.transactions_tab = TransactionsWidget(parent=self)
+        # setup the relations for each tab model to ensure they're created only once
+        self.payments_tab._setupRelations()
+        self.transactions_tab._setupRelations()
+        # setup the remaining ui
         self.tabs.resize(300,200)
         self.tabs.addTab(self.payments_tab, "Payments")
         self.tabs.addTab(self.transactions_tab, "Transactions")
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
-        
-    @QtCore.pyqtSlot()
-    def on_click(self):
-        for currentQTableWidgetItem in self.selectedItems():
-            print(currentQTableWidgetItem.row(), currentQTableWidgetItem.column(), currentQTableWidgetItem.text())
