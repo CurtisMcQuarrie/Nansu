@@ -65,8 +65,9 @@ class AddAccountDialog(QDialog):
 
 
 class AddTransactionDialog(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, account_id, parent=None):
         super().__init__(parent=parent)
+        self.account_id = account_id
         self.setWindowTitle("Nansu - Add Transaction")
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
@@ -112,6 +113,8 @@ class AddTransactionDialog(QDialog):
 
         if not self.data:
             return
+        else:
+            self.data["Account"] = self.account_id
 
         super().accept()
 
