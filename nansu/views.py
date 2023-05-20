@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.current_account_id = -1
-        self.current_payment_id = -1
+        # self.current_payment_id = -1
         self.setWindowTitle("Nansu Finance App")
         self.resize(WINDOW_WIDTH, WINDOW_HEIGHT)
         # initialize subwidgets
@@ -52,7 +52,14 @@ class MainWindow(QMainWindow):
         menu.addAction("&Exit", self.close)
 
     def switchWidget(self, index):
-        if index == 1:  # go to payments
+        """
+        Switch the active subwidget inside the MainWindows central widget.
+        :param index: Integer indicating which widget index to switch too.
+            Current indices are:
+                0 - accounts_widget
+                1 - tabs_widget
+        """
+        if index == 1:
             query_str = f"SELECT name FROM accounts WHERE id={self.current_account_id}"
             row_data = self.accounts_widget.accounts_model.getRowData(query_str)
             if len(row_data) > 0:
@@ -63,7 +70,7 @@ class MainWindow(QMainWindow):
                 self.tabs_widget.transactions_tab.setTitle("")
             self.tabs_widget.payments_tab.payments_model.setFilter("accountID", self.current_account_id)
             self.tabs_widget.transactions_tab.transactions_model.setFilter("accountID", self.current_account_id)
-
+        self.tabs_widget.tabs.setCurrentIndex(0)
         self.central_widget.setCurrentIndex(index)
 
 
@@ -81,7 +88,6 @@ class AccountsWidget(QWidget):
         self.btns_layout = QVBoxLayout()
         self._setupUI()
         self.setLayout(self.outer_layout)
-        
 
     def _setupUI(self):
         """
@@ -179,6 +185,7 @@ class PaymentsWidget(QWidget):
     """
     def __init__(self, parent=None):
         super().__init__(parent=parent)
+        self.tabs_widget = self.parent()  # parent is referenced here because it is override when added to tabs
         self.central_widget = self.parent().parent()
         self.main_window = self.central_widget.parent()
         self.payments_model = CustomModel(
@@ -195,7 +202,7 @@ class PaymentsWidget(QWidget):
     def _setupRelations(self):
         self.payments_model.setRelation("Account", self.main_window.accounts_widget.accounts_model, "ID", "Name")
         self.transactions_model = self.parent().transactions_tab.transactions_model        
-
+        
     def _setupUI(self):
         """
         setup payments view gui
@@ -226,7 +233,6 @@ class PaymentsWidget(QWidget):
         self.btns_layout.addWidget(self.delete_button)
         self.btns_layout.addStretch()
         self.btns_layout.addWidget(self.view_button)
-        self.view_button.setEnabled(False)
         self.btns_layout.addWidget(self.back_button)
         self.btns_layout.addWidget(self.clearAllButton)
         # lay out the main GUI
@@ -282,14 +288,21 @@ class PaymentsWidget(QWidget):
         """
         view the selected account
         """
-         # get current account id
+        # get current account id
         row =  self.table.currentIndex().row()
         if row < 0:
             return
         current_index = self.table.model().index(row, 0)
-        self.main_window.current_payment_id = self.table.model().data(current_index)
-        # switch views
-        self.main_window.switchWidget(self.central_widget.currentIndex() + 1)
+        selected_payment_id = self.table.model().data(current_index)
+        # setup filters and title for the transactions tab
+        self.tabs_widget.transactions_tab.transactions_model.setFilter("paymentID", current_index)
+        query_str = f"SELECT description FROM payments WHERE id={selected_payment_id}"
+        row_data = self.payments_model.getRowData(query_str)
+        if len(row_data) > 0:
+            self.tabs_widget.transactions_tab.setTitle(f"{row_data[0]}")
+        else:
+             self.tabs_widget.transactions_tab.setTitle("")
+        self.tabs_widget.tabs.setCurrentWidget(self.tabs_widget.transactions_tab)
 
     def back(self):
         """
@@ -380,10 +393,11 @@ class TransactionsWidget(QWidget):
         """
         open the add payment dialog
         """
-        dialog = AddPaymentDialog(self.main_window.current_payment_id, self)
-        if dialog.exec() == QDialog.Accepted:
-            self.transactions_model.add(dialog.data)
-            self.table.resizeColumnsToContents()
+        pass
+        # dialog = AddPaymentDialog(self.main_window.current_payment_id, self)
+        # if dialog.exec() == QDialog.Accepted:
+            # self.transactions_model.add(dialog.data)
+            # self.table.resizeColumnsToContents()
 
     def delete(self):
         """
@@ -427,7 +441,8 @@ class TransactionsWidget(QWidget):
         if row < 0:
             return
         current_index = self.table.model().index(row, 0)
-        self.main_window.current_payment_id = self.table.model().data(current_index)
+
+        # self.main_window.current_payment_id = self.table.model().data(current_index)
         # switch views
         self.main_window.switchWidget(self.central_widget.currentIndex() + 1)
 
@@ -435,7 +450,7 @@ class TransactionsWidget(QWidget):
         """
         go back to previous index
         """
-        self.main_window.current_payment_id = -1
+        # self.main_window.current_payment_id = -1
         self.main_window.switchWidget(self.central_widget.currentIndex() - 1)
 
     def setTitle(self, title, max_length=16):
@@ -470,5 +485,7 @@ class TabsWidget(QWidget):
         self.tabs.resize(300,200)
         self.tabs.addTab(self.payments_tab, "Payments")
         self.tabs.addTab(self.transactions_tab, "Transactions")
+        # as an aside, these addTab() calls stupidly change the parents of the
+        # payments_tab and transactions_tab to the parent of this widget...
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
