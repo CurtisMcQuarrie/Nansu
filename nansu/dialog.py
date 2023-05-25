@@ -78,13 +78,22 @@ class AddTransactionDialog(QDialog):
         """
         setup the add transaction dialog's GUI
         """
+        self.form_fields = list()
+        
         self.amount_field = QLineEdit()
         self.amount_field.setValidator(QIntValidator())
         self.amount_field.setObjectName("Amount")
+        self.form_fields.append(self.amount_field)
 
+        self.date_field = QDateTimeEdit(calendarPopup=True)
+        self.date_field.setDateTime(QDateTime.currentDateTime())
+        self.date_field.setObjectName("Date")
+        self.form_fields.append(self.date_field)
+        
         formLayout = QFormLayout()
         formLayout.addRow("Amount:", self.amount_field)
         self.layout.addLayout(formLayout)
+        
 
         self.buttons_box = QDialogButtonBox(self)
         self.buttons_box.setOrientation(Qt.Horizontal)

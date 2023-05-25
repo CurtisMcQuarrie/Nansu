@@ -56,19 +56,19 @@ class CustomModel:
     def add(self, data):
         """
         add an instance to the model
+        :param data: The data for the entry to add into the model
         """
-        rows = self.model.rowCount()
-        self.model.insertRows(rows, 1)
+        row = self.model.rowCount()
+        self.model.insertRows(row, 1)
 
         for key, value in data.items():
+            # only add the values that are not hidden fields
             if key in self.field_names and key not in self.hidden_fields:
-                # get the index for the table
+                # get the index for the field in the model
                 field_index = self.field_names.index(key)
                 self.model.setData(
-                    self.model.index(
-                        rows,
-                        field_index
-                    ), value
+                    self.model.index(row, field_index), 
+                    value
                 )
 
         self.model.submitAll()
@@ -156,14 +156,14 @@ class CustomModel:
 class CustomTransactionModel(CustomModel):
     
     def addFromPayment(self, data):
-        current_date = data.get('StartDate')
-        end_date = data.get('EndDate')
-        frequency = data.get('Frequency')
-        amount = data.get('Amount')
-        transaction_data = {
-            
-        }
-
+        """
+        add a transaction that result from the addition of a payment.
+        :param data: the transaction data to add to the model.
+        """
+        current_date = data.get("StartDate")
+        end_date = data.get("EndDate")
+        frequency = data.get("Frequency")
+        
         match frequency:
             case PaymentFrequency.Daily:
                 delta = timedelta(days=1)
@@ -181,7 +181,16 @@ class CustomTransactionModel(CustomModel):
                 delta = timedelta(days=365/2)
             case _:
                 delta = timedelta(days=1)
-
+                
+        transaction_data = {
+            "Amount": data.get("Amount"),
+            "Payment": data.get("Payment"),
+            "Account": data.get("Account")
+        }
+        print("adding transactions from payments")
         while current_date <= end_date:
-            self.add()
+            transaction_data["PaidDate"] = current_date
+            transaction_data["DueDate"] = current_date
+            self.add(transaction_data)
             current_date += delta
+            print("transaction added")

@@ -1,4 +1,15 @@
 # Troubleshooting
+## Best Resources
+https://doc.qt.io/
+    - actual QT documentation.
+    - sadly it is written w.r.t. the c++ implementation.
+
+## Model Manipulation
+Manipulating the data in a model is very incremental.
+
+For example, to add a single entry into the model you must follow these steps.
+1. Get the row count...
+
 
 ## Window Layouts
 - **MainWindow**

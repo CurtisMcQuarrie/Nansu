@@ -248,6 +248,14 @@ class PaymentsWidget(QWidget):
         dialog = AddPaymentDialog(self.main_window.current_account_id, self)
         if dialog.exec() == QDialog.Accepted:
             self.payments_model.add(dialog.data)
+            # get the payment id to pass on to the transaction
+            query_str = "SELECT id FROM payments ORDER BY id DESC LIMIT 1"
+            query_result = self.payments_model.getRowData(query_str)
+            if len(query_result) > 0:
+                   new_payment_id = query_result[0]
+            else:
+                raise ValueError("the last payment id could not be found when populating transactions model")
+            dialog.data["Payment"] = new_payment_id
             self.transactions_model.addFromPayment(dialog.data)
             self.table.resizeColumnsToContents()
 
@@ -337,7 +345,7 @@ class TransactionsWidget(QWidget):
         self.tabs_widget = self.parent()
         self.central_widget = self.parent().parent()
         self.main_window = self.central_widget.parent()
-        self.transactions_model = CustomModel(
+        self.transactions_model = CustomTransactionModel(
             "transactions", 
             ["ID", "Amount", "Unit", "PaidDate", "DueDate", "Payment", "Account"], 
             TableType.Relational
